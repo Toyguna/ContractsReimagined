@@ -1,7 +1,9 @@
 # ContractsReimagined - DEV
 
 ## - TO DO -
-
+- Literally the database
+- More API features
+- CSTRIKE and TF2 support with seperate plugins ( with the API )
 
 ## - PATCH NOTES -
 
