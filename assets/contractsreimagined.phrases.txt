@@ -1,0 +1,17 @@
+"Phrases"
+{
+    "Err_DatabaseConnect"
+    {
+        "en" "Could not connect to the database."
+    }
+
+    "Err_NoActiveContract"
+    {
+        "en" "You don't have an active contract."
+    }
+
+    "Success_DatabaseConnect"
+    {
+        "en" "Successfully connected to the database."
+    }
+}

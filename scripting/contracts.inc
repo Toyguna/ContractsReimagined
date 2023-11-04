@@ -97,9 +97,9 @@ enum struct Contracts_Task
         return this.progress >= this.goal;
     }
 
-    float GetCompletion()
+    int GetCompletion()
     {
-        return this.progress * 1.0 / this.goal;
+        return this.progress * 100 / this.goal;
     }
 }
 
@@ -132,7 +132,7 @@ native bool Contracts_GetClientContract(int client, any[] buffer, int size);
  * @param size Size of contract
  * @return true if success, false otherwise
  */
-native void Contracts_SetClientContract(int client, any[] contract, int size);
+native bool Contracts_SetClientContract(int client, any[] contract, int size);
 
 
 

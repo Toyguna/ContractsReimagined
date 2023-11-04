@@ -106,7 +106,6 @@ public void ReadContracts()
 
     do {
         kv.GetSectionName(id, sizeof(id));
-        PrintToServer("contract: %s", id);
 
         Contracts_Contract contract;
         contract.Init();
@@ -114,6 +113,8 @@ public void ReadContracts()
         contract.id = id;
 
         ReadContractKey(kv, contract);
+
+        g_smContracts.SetArray(id, contract, sizeof(contract), true);
 
     } while(kv.GotoNextKey(false))
 
@@ -139,10 +140,8 @@ void ReadContractKey(KeyValues kv, Contracts_Contract contract)
 
     do {
         kv.GetSectionName(id, sizeof(id));
-        PrintToServer("- id: %s", id);
 
         int goal = kv.GetNum(NULL_STRING, -1);
-        PrintToServer("L goal: %d", goal);
 
         Contracts_CreateTaskFromId(id, task, sizeof(task));
         task.goal = goal;
@@ -150,8 +149,6 @@ void ReadContractKey(KeyValues kv, Contracts_Contract contract)
         contract.AddTask(task);
 
     } while(kv.GotoNextKey(false))
-
-    PrintToServer("contract name: %s \n", name);
 
     kv.GoBack();
     kv.GoBack();

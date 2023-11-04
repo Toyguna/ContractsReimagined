@@ -18,6 +18,7 @@
 any Native_ClientHasContract(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1);
+    if (!IsClientValid(client)) return false;
 
     return ClientHasContract(client);
 }
@@ -33,12 +34,12 @@ any Native_ClientHasContract(Handle plugin, int numParams)
 any Native_GetClientContract(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1);
+    if (!IsClientValid(client)) return false;
+
     int size = GetNativeCell(3);
     any[] buffer = new any[size];
 
-    bool success = GetClientContract(client, buffer, size);
-
-    if (!success) return false;
+    if (!GetClientContract(client, buffer, size)) return false;
 
     SetNativeArray(2, buffer, size);
     return true;
@@ -55,13 +56,13 @@ any Native_GetClientContract(Handle plugin, int numParams)
 any Native_SetClientContract(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1);
+    if (!IsClientValid(client)) return false;
+
     int size = GetNativeCell(3);
     any[] contract = new any[size];
     GetNativeArray(2, contract, size);
 
-    SetClientContract(client, contract, size);
-
-    return 1;
+    return SetClientContract(client, contract, size);
 }
 
 
@@ -338,8 +339,8 @@ any Native_CreateTaskFromId(Handle plugin, int numParams)
 
     int string_len;
     GetNativeStringLength(1, string_len);
-    char[] id = new char[string_len];
-    GetNativeString(1, id, string_len);
+    char[] id = new char[string_len + 1];
+    GetNativeString(1, id, string_len + 1);
 
     Contracts_Task template;
 
