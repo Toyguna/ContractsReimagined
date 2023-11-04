@@ -3,10 +3,12 @@
 #include <sourcemod>
 
 #include <contracts>
+#include <contracts-menu.sp>
 #include <contracts-tasks.sp>
 #include <contracts-natives.sp>
 #include <contracts-utility.sp>
 #include <contracts-database.sp>
+#include <contracts-commands.sp>
 
 #pragma newdecls required
 
@@ -15,9 +17,15 @@ public Plugin myinfo =
 	name = "Contracts Reimagined",
 	author = "Toyguna",
 	description = "A SourceMod plugin for in-game contracts.",
-	version = "b0.0.1",
+	version = "b0.0.2",
 	url = "https://github.com/Toyguna/ContractsReimagined"
 };
+
+
+// ============== [ CONVARS ] ============== //
+
+ConVar g_cvDatabaseCfg;  /* contracts_database_cfg */
+
 
 // ============== [ GLOBAL VARIABLES ] ============== //
 
@@ -30,23 +38,24 @@ bool ga_bPlayerHasContract[MAXPLAYERS + 1] = { false, ... };
 GlobalForward gforward_ContractCompletion;
 GlobalForward gforward_TaskCompletion;
 
-//  - ConVars
-ConVar g_cvDatabaseCfg;
-
-
 // ============== [ FORWARDS ] ============== //
 
 public void OnPluginStart()
 {
+    LoadTranslations("contractsreimagined.phrases");
+
+    CreateConVars();
+    AutoExecConfig(true)
+
     /* / Initialization / */
     Init_Variables();
     Register_GlobalForwards();
+    Register_Commands();
 
     //  : Files
     FileTasks_Initialize();
 
-    ReadTasks();
-    ReadContracts();
+    DB_Connect();
 }
 
 public void OnPluginEnd()
@@ -63,7 +72,7 @@ public APLRes AskPluginLoad2(Handle plugin, bool late, char[] error, int err_max
     return APLRes_Success;
 }
 
-public void OnClientPutInServer(int client)
+public void OnClientPostAdminCheck(int client)
 {
     LoadPlayer(client);
 }
@@ -73,17 +82,30 @@ public void OnClientDisconnect(int client)
     UnloadPlayer(client);
 }
 
+public void OnConfigsExecuted()
+{
+    ReadTasks();
+    ReadContracts();
+}
+
 
 // ============== [ INITIALIZATION ] ============== //
 
 void Init_Variables()
 {
-    ga_PlayerContracts = new ArrayList(sizeof(Contracts_Contract));
+    ga_PlayerContracts = new ArrayList(sizeof(Contracts_Contract), MaxClients + 1);
 }
 
-void Init_ConVars()
+void CreateConVars()
 {
+    g_cvDatabaseCfg = CreateConVar("contracts_database_cfg", "contracts", "Database configuration for MySQL.")
+}
 
+void Register_Commands()
+{
+    RegConsoleCmd("sm_contract", Command_ShowContract, "Shows the user their contract.");
+
+    RegAdminCmd("sm_givecontract", Command_GiveContract, ADMFLAG_CONVARS, "Give a client contract");    
 }
 
 void Register_GlobalForwards()
@@ -115,8 +137,6 @@ void LoadPlayer(int client)
     ga_bPlayerHasContract[client] = false;
 
     DB_LoadClient(client);
-
-    ga_bPlayerHasContract[client] = true;
 }
 
 void UnloadPlayer(int client)
@@ -131,6 +151,8 @@ void UnloadPlayer(int client)
 
 public bool ClientHasContract(int client)
 {
+    if (!IsClientValid(client)) return false;
+
     return ga_bPlayerHasContract[client];
 }
 
@@ -144,9 +166,8 @@ public bool ClientHasContract(int client)
  */
 public bool GetClientContract(int client, any[] buffer, int size)
 {
-    bool hasContract = ClientHasContract(client);
 
-    if (!hasContract) return false;
+    if (!ClientHasContract(client)) return false;
     if (size < 1) return false;
 
     ga_PlayerContracts.GetArray(client, buffer, size);
@@ -162,13 +183,15 @@ public bool GetClientContract(int client, any[] buffer, int size)
  * @param size Size of contract
  * @return true if success, false otherwise
  */
-public void SetClientContract(int client, any[] contract, int size)
+public bool SetClientContract(int client, any[] contract, int size)
 {
-    if (size < 1) return;
+    if (size < 1) return false;
 
     ga_PlayerContracts.SetArray(client, contract, size);
 
     ga_bPlayerHasContract[client] = true;
+
+    return true;
 }
 
 

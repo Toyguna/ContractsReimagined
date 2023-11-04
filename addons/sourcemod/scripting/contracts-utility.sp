@@ -8,3 +8,8 @@
 
 
 // ============== [ UTILITY ] ============== //
+
+public bool IsClientValid(int client)
+{
+    return 0 < client <= MaxClients && IsClientConnected(client);
+}
