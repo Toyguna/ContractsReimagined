@@ -1,11 +1,17 @@
 # ContractsReimagined - DEV
 
 ## - TO DO -
-- Literally the database
 - More API features
 - CSTRIKE and TF2 support with seperate plugins ( with the API )
 
 ## - PATCH NOTES -
+
+### b0.0.3
+- Completed the database
+- Added contract completion.
+- Added admin command: ``sm_completecontract``
+    - Usage: sm_completecontract <target_name>
+    - Completes a client's contract
 
 ### b0.0.2
 - Fixed native ``#Contracts_SetClientContract``
