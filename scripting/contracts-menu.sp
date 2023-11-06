@@ -30,8 +30,6 @@ public Menu MenuConstructor_Contract(int client)
         IntToString(i, str_index, sizeof(str_index));
 
         bool completed = task.IsCompleted();
-        task.progress = 5;
-        tasks.SetArray(i, task, sizeof(task));
 
         int drawstyle;
 

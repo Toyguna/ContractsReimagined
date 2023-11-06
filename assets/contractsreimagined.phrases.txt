@@ -14,4 +14,22 @@
     {
         "en" "Successfully connected to the database."
     }
+
+    "DB_FirstLogin"
+    {
+        "#format" "{1:s}"
+        "en" "Player '{1}' has joined for the first time! Creating database entry."
+    }
+
+    "Contract_Completed"
+    {
+        "#format" "{1:s}"
+        "en" "You have completed your contract: {1}!"
+    }
+
+    "Contract_CompletedAnnounce"
+    {
+        "#format" "{1:s} {2:s}"
+        "en" "{1} completed their contract: {2}!"
+    }
 }
