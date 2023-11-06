@@ -3,7 +3,18 @@
 #endif
 #define _contractsreimagined_included_
 
+
+/**
+ * Colours:
+ *  - #F5B54B = Chat Prefix (\x0A because of CS:GO !!!!)
+ * 
+ */
+
 // ============== [ CONSTANTS ] ============== //
+
+#define PLUGIN_VERSION "b0.0.3"
+#define CHAT_PREFIX "\x06[Contracts]\x01"
+#define CONSOLE_PREFIX "[Contracts]"
 
 #define MAX_TASK_ID 32
 #define MAX_TASK_NAME 64
@@ -21,16 +32,26 @@ enum Contracts_TaskType
 
     // General
     Type_Kill,
+    Type_HeadshotKill,
 
 
     // TF2
     Type_TF2Uber,
     Type_TF2Cap,
+    Type_TF2WinRound,
+    Type_TF2WinMatch,
+    Type_TF2CastSpell,
+    Type_TF2KillBySpell,
 
 
     // CSTRIKE
     Type_CSPlant,
-    Type_CSDefuse
+    Type_CSDefuse,
+    Type_CSWinRound,
+    Type_CSWinMatch,
+    Type_CSGrenadeKill,
+    Type_CSBombKill,
+    Type_CSFireKill
 }
 
 enum Contracts_TaskDetail
@@ -87,6 +108,7 @@ enum struct Contracts_Task
     // ``goal = -1`` means that the struct is a blueprint
     int goal;
     int progress;
+    int index; // index in contract; -1 means blueprint
 
     Contracts_TaskType type;
     Contracts_TaskDetail detail_as;
@@ -135,6 +157,23 @@ native bool Contracts_GetClientContract(int client, any[] buffer, int size);
 native bool Contracts_SetClientContract(int client, any[] contract, int size);
 
 
+/*
+ * Removes a player's contract
+ *
+ * @param client Client index
+ * @return false if client does not have contract
+ */
+native bool Contracts_RemoveClientContract(int client);
+
+/**
+ * Progress a task by a specificed amount.
+ * 
+ * @param client        Client index
+ * @param amount        Amount to progress
+ * @param task_index    Task's index in contract
+ */
+native void Contracts_ProgressTask(int client, int amount, int task_index);
+
 
 /*
  * Converts string value to ``Contracts_TaskType``
@@ -180,8 +219,9 @@ native bool Contracts_StringFromTaskDetail(Contracts_TaskDetail type, const char
  * @param id Id of task to create
  * @param buffer Buffer to store task
  * @param size Size of buffer
+ * @return true if success, false otherwise
  */
-native void Contracts_CreateTaskFromId(const char[] id, any[] buffer, int size);
+native bool Contracts_CreateTaskFromId(const char[] id, any[] buffer, int size);
 
 /*
  * Creates a contract from given id.
@@ -189,8 +229,9 @@ native void Contracts_CreateTaskFromId(const char[] id, any[] buffer, int size);
  * @param id Id of contract to create
  * @param buffer Buffer to store contract
  * @param size Size of buffer
+ * @return true if success, false otherwise
  */
-native void Contracts_CreateContractFromId(const char[] id, any[] buffer, int size);
+native bool Contracts_CreateContractFromId(const char[] id, any[] buffer, int size);
 
 
 // ============== [ FORWARDS ] ============== //
