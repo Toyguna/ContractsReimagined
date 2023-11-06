@@ -65,6 +65,41 @@ any Native_SetClientContract(Handle plugin, int numParams)
     return SetClientContract(client, contract, size);
 }
 
+/*
+ * Removes a player's contract
+ *
+ * @param client Client index
+ * @return false if client does not have contract
+ */
+any Native_RemoveClientContract(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    if (!IsClientValid(client)) return false;
+
+    if (!Contracts_ClientHasContract(client)) return false;
+
+    RemoveClientContract(client);
+
+    return true;
+}
+
+/**
+ * Progress a task by a specificed amount.
+ * 
+ * @param client        Client index
+ * @param amount        Amount to progress
+ * @param task_index    Task's index in contract
+ */
+any Native_ProgressTask(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    int amount = GetNativeCell(2);
+    int task_index = GetNativeCell(3);
+
+    ProgressTask(client, amount, task_index);
+
+    return 0;
+}
 
 /*
  * Converts string value to ``Contracts_TaskType``
@@ -89,6 +124,10 @@ any Native_TaskTypeFromString(Handle plugin, int numParams)
     {
         type = Type_Kill;
     }
+    if (StrEqual(string, "HeadshotKill"))
+    {
+        type = Type_HeadshotKill;
+    }
     // TF2
     else if (StrEqual(string, "TF2Uber"))
     {
@@ -98,6 +137,22 @@ any Native_TaskTypeFromString(Handle plugin, int numParams)
     {
         type = Type_TF2Cap;
     }
+    else if (StrEqual(string, "TF2WinRound"))
+    {
+        type = Type_TF2WinRound;
+    }
+    else if (StrEqual(string, "TF2WinMatch"))
+    {
+        type = Type_TF2WinMatch;
+    }
+    else if (StrEqual(string, "TF2CastSpell"))
+    {
+        type = Type_TF2CastSpell;
+    }
+    else if (StrEqual(string, "TF2KillBySpell"))
+    {
+        type = Type_TF2KillBySpell;
+    }
     // CSTRIKE
     else if (StrEqual(string, "CSPlant"))
     {
@@ -106,6 +161,26 @@ any Native_TaskTypeFromString(Handle plugin, int numParams)
     else if (StrEqual(string, "CSDefuse"))
     {
         type = Type_CSDefuse;
+    }
+    else if (StrEqual(string, "CSWinRound"))
+    {
+        type = Type_CSWinRound;
+    }
+    else if (StrEqual(string, "CSWinMatch"))
+    {
+        type = Type_CSWinMatch;
+    }
+    else if (StrEqual(string, "CSGrenadeKill"))
+    {
+        type = Type_CSGrenadeKill;
+    }
+    else if (StrEqual(string, "CSBombKill"))
+    {
+        type = Type_CSBombKill;
+    }
+    else if (StrEqual(string, "CSFireKill"))
+    {
+        type = Type_CSFireKill;
     }
 
     return type;
@@ -138,6 +213,10 @@ any Native_StringFromTaskType(Handle plugin, int numParams)
         {
             buffer = "Kill";
         }
+        case Type_HeadshotKill:
+        {
+            buffer = "HeadshotKill";
+        }
         // TF2
         case Type_TF2Uber:
         {
@@ -147,6 +226,22 @@ any Native_StringFromTaskType(Handle plugin, int numParams)
         {
             buffer = "TF2Cap";
         }
+        case Type_TF2WinRound:
+        {
+            buffer = "TF2WinRound";
+        }
+        case Type_TF2WinMatch:
+        {
+            buffer = "TF2WinMatch";
+        }
+        case Type_TF2CastSpell:
+        {
+            buffer = "TF2Uber";
+        }
+        case Type_TF2KillBySpell:
+        {
+            buffer = "TF2KillBySpell";
+        }
         // CSTRIKE
         case Type_CSPlant:
         {
@@ -155,6 +250,26 @@ any Native_StringFromTaskType(Handle plugin, int numParams)
         case Type_CSDefuse:
         {
             buffer = "CSDefuse";
+        }
+        case Type_CSWinRound:
+        {
+            buffer = "CSWinRound";
+        }
+        case Type_CSWinMatch:
+        {
+            buffer = "CSWinMatch";
+        }
+        case Type_CSGrenadeKill:
+        {
+            buffer = "CSGrenadeKill";
+        }
+        case Type_CSBombKill:
+        {
+            buffer = "CSBombKill";
+        }
+        case Type_CSFireKill:
+        {
+            buffer = "CSFireKill";
         }
         default:
         {
@@ -367,12 +482,12 @@ any Native_CreateContractFromId(Handle plugin, int numParams)
 
     int string_len;
     GetNativeStringLength(1, string_len);
-    char[] id = new char[string_len];
-    GetNativeString(1, id, string_len);
+    char[] id = new char[string_len + 1];
+    GetNativeString(1, id, string_len + 1);
 
     Contracts_Contract template;
 
-    bool success = GetContractTemplate(id, template, sizeof(template));
+    bool success = GetContractTemplate(id, template);
 
     if (!success) return false;
 

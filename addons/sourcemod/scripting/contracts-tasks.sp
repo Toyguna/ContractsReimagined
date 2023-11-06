@@ -39,6 +39,7 @@ public void ReadTasks()
 
         Contracts_Task task;
         task.id = id;
+        task.index = -1;
 
         ReadTaskKey(kv, task)
 
@@ -115,7 +116,6 @@ public void ReadContracts()
         ReadContractKey(kv, contract);
 
         g_smContracts.SetArray(id, contract, sizeof(contract), true);
-
     } while(kv.GotoNextKey(false))
 
     delete kv;
@@ -137,6 +137,7 @@ void ReadContractKey(KeyValues kv, Contracts_Contract contract)
     contract.name = name;
 
     Contracts_Task task;
+    int index = 0;
 
     do {
         kv.GetSectionName(id, sizeof(id));
@@ -145,14 +146,84 @@ void ReadContractKey(KeyValues kv, Contracts_Contract contract)
 
         Contracts_CreateTaskFromId(id, task, sizeof(task));
         task.goal = goal;
+        task.index = index;
 
         contract.AddTask(task);
+        index++;
 
     } while(kv.GotoNextKey(false))
 
     kv.GoBack();
     kv.GoBack();
 }
+
+/**
+ * @param client        Client index
+ * @param amount        Amount to progress
+ * @param task_index    Task's index in contract
+ */
+public void ProgressTask(int client, int amount, int task_index)
+{
+    Contracts_Contract contract;
+    Contracts_GetClientContract(client, contract, sizeof(contract));
+
+    Contracts_Task task;
+    contract.tasks.GetArray(task_index, task, sizeof(task));
+
+    task.progress += amount;
+    if (task.IsCompleted()){ 
+        task.progress = task.goal;
+        TryCompleteClientContract(client);
+    }
+    contract.tasks.SetArray(task.index, task, sizeof(task));
+}
+
+public void CompleteClientContract(int client)
+{
+    Contracts_Contract contract;
+    Contracts_GetClientContract(client, contract, sizeof(contract));
+
+    char username[MAX_NAME_LENGTH];
+    GetClientName(client, username, sizeof(username));
+
+    if (true) // announce
+    {
+        PrintToChatAll("%s %T", CHAT_PREFIX, "Contract_CompletedAnnounce", LANG_SERVER, username, contract.name);
+    }
+    else
+    {
+        PrintToChat(client, "%s %T", CHAT_PREFIX, "Contract_Completed", LANG_SERVER, contract.name);
+    }
+
+    Contracts_RemoveClientContract(client);
+}
+
+public void TryCompleteClientContract(int client)
+{
+    if (!CheckContractCompletion(client)) return;
+
+    CompleteClientContract(client);
+}
+
+public bool CheckContractCompletion(int client)
+{
+    Contracts_Contract contract;
+    Contracts_GetClientContract(client, contract, sizeof(contract));
+    
+    Contracts_Task task;
+
+    int counter = 0;
+
+    for (int i = 0; i < contract.tasks.Length; i++)
+    {
+        contract.tasks.GetArray(i, task, sizeof(task));
+
+        if (task.IsCompleted()) counter++;
+    }
+
+    return counter >= contract.tasks.Length;
+}
+
 
 // ============== [ UTILITY ] ============== //
 
@@ -167,7 +238,12 @@ public bool GetTaskTemplate(const char[] id, any[] buffer, int size)
 /*
  * @return true on success, false otherwise
  */
-public bool GetContractTemplate(const char[] id, any[] buffer, int size)
+public bool GetContractTemplate(const char[] id, Contracts_Contract buffer)
 {
-    return g_smContracts.GetArray(id, buffer, size);
+    bool success = g_smContracts.GetArray(id, buffer, sizeof(buffer));
+    if (!success) return false;
+
+    buffer.tasks = buffer.tasks.Clone();
+
+    return true;
 }

@@ -26,6 +26,8 @@ public Plugin myinfo =
 
 ConVar g_cvDatabaseCfg;  /* contracts_database_cfg */
 
+ConVar g_cvAnnounceContractCompletions /* contracts_announce_contract_completions */
+
 
 // ============== [ GLOBAL VARIABLES ] ============== //
 
@@ -99,13 +101,15 @@ void Init_Variables()
 void CreateConVars()
 {
     g_cvDatabaseCfg = CreateConVar("contracts_database_cfg", "contracts", "Database configuration for MySQL.")
+    g_cvAnnounceContractCompletions = CreateConVar("contracts_announce_contract_completions", "true", "Announce contract completions.")
 }
 
 void Register_Commands()
 {
     RegConsoleCmd("sm_contract", Command_ShowContract, "Shows the user their contract.");
 
-    RegAdminCmd("sm_givecontract", Command_GiveContract, ADMFLAG_CONVARS, "Give a client contract");    
+    RegAdminCmd("sm_givecontract", Command_GiveContract, ADMFLAG_CONVARS, "Give a client contract.");    
+    RegAdminCmd("sm_completecontract", Command_CompleteContract, ADMFLAG_CONVARS, "Complete a client's contract.");
 }
 
 void Register_GlobalForwards()
@@ -120,6 +124,9 @@ void Register_Natives()
 
     CreateNative("Contracts_GetClientContract", Native_GetClientContract);
     CreateNative("Contracts_SetClientContract", Native_SetClientContract);
+    CreateNative("Contracts_RemoveClientContract", Native_RemoveClientContract);
+
+    CreateNative("Contracts_ProgressTask", Native_ProgressTask);
 
     CreateNative("Contracts_TaskTypeFromString", Native_TaskTypeFromString);
     CreateNative("Contracts_StringFromTaskType", Native_StringFromTaskType);
@@ -137,11 +144,20 @@ void LoadPlayer(int client)
     ga_bPlayerHasContract[client] = false;
 
     DB_LoadClient(client);
+    DB_CreateClientEntry(client);
 }
 
 void UnloadPlayer(int client)
 {
     DB_SaveClient(client);
+
+    if (ClientHasContract(client))
+    {
+        Contracts_Contract contract;
+        Contracts_GetClientContract(client, contract, sizeof(contract));
+
+        delete contract.tasks;
+    }
 
     ga_bPlayerHasContract[client] = false;
 } 
@@ -191,7 +207,17 @@ public bool SetClientContract(int client, any[] contract, int size)
 
     ga_bPlayerHasContract[client] = true;
 
+    DB_SaveClient(client);
+
     return true;
+}
+
+public void RemoveClientContract(int client)
+{
+    // Set index to be replaceable
+    ga_bPlayerHasContract[client] = false;
+
+    DB_SaveClient(client);
 }
 
 

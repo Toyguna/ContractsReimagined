@@ -70,7 +70,7 @@ public Action Command_GiveContract(int client, int args)
     }
 
     Contracts_Contract contract;
-    bool success = GetContractTemplate(contract_id, contract, sizeof(contract));
+    bool success = GetContractTemplate(contract_id, contract);
     if (!success)
     {
         ReplyToCommand(client, "[SM] Error while fetching contract.");
@@ -86,11 +86,40 @@ public Action Command_GiveContract(int client, int args)
     return Plugin_Handled;
 }
 
+public Action Command_CompleteContract(int client, int args)
+{
+    if (args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_completecontract <name>");
+        return Plugin_Handled;
+    }
+
+    char pattern[64];
+    GetCmdArg(1, pattern, sizeof(pattern));
+
+    int target = ParseClientName(client, pattern);
+
+    if (target == -1)
+    {
+        ReplyToCommand(client, "[SM] No players found.");
+        return Plugin_Handled;
+    }
+    else if (target == -2)
+    {
+        ReplyToCommand(client, "[SM] Multiple matching players.");
+        return Plugin_Handled;
+    }
+    
+    CompleteClientContract(client);
+
+    return Plugin_Handled;
+}
+
 public Action Command_ShowContract(int client, int args)
 {
     if (!Contracts_ClientHasContract(client))
     {
-        ReplyToCommand(client, "[Contracts] %T", "Err_NoActiveContract", client);
+        ReplyToCommand(client, "%s %T", CHAT_PREFIX, "Err_NoActiveContract", client);
         return Plugin_Handled;
     }
 
