@@ -1,19 +1,29 @@
 # ContractsReimagined - DEV
 
 ## - TO DO -
-- More API features
-- CSTRIKE and TF2 support with seperate plugins ( with the API )
+- More API features (done for now)
+- CSGO support (UHHHHHHHHHHhh CS2??, postponed for now)
+- TF2 Support (sorta done)
+- !! Refactor Contracts_TaskType and remove generic types (causes issue with overlapping extentions)
+- !! A CFG FILE!! and more ConVars for more customization like chat prefix, colors!
+- !! REWARDS, REWARDS AND REWARDS! Must create extentions rewards (credits, backpack items)
 
 ## - PATCH NOTES -
 
-### b0.0.3
+### b0.4
+- Fixed a critical error while reading task cfgs. "as" and "target" parameters were mixed (Oops!)
+- Fixed forwards not being pushed. (I forgot to implement pushing; Oops!)
+- Also changed the prefix color to \x05 (idek the color)
+- Dev Note: The plugin is almost ready for launch, some more QoL and fully complete extentions, then voila!
+
+### b0.3
 - Completed the database
 - Added contract completion.
 - Added admin command: ``sm_completecontract``
     - Usage: sm_completecontract <target_name>
     - Completes a client's contract
 
-### b0.0.2
+### b0.2
 - Fixed native ``#Contracts_SetClientContract``
 - Added admin command: ``sm_givecontract``
     - Usage: sm_givecontract <target_name> <contract_id>
@@ -25,5 +35,5 @@
 - Added database connection.
 - Created sql-init file.
 
-### b0.0.1
+### b0.1
 - Initial commit.
