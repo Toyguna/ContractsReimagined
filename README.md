@@ -4,7 +4,6 @@
 - More API features (done for now)
 - CSGO support (UHHHHHHHHHHhh CS2??, postponed for now)
 - TF2 Support (sorta done)
-- !! Refactor Contracts_TaskType and remove generic types (causes issue with overlapping extentions)
 - !! A CFG FILE!! and more ConVars for more customization like chat prefix, colors!
 - !! REWARDS, REWARDS AND REWARDS! Must create extentions rewards (credits, backpack items)
 
