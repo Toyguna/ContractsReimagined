@@ -29,7 +29,7 @@
 
     "Contract_CompletedAnnounce"
     {
-        "#format" "{1:s} {2:s}"
+        "#format" "{1:s},{2:s}"
         "en" "{1} completed their contract: {2}!"
     }
 }
