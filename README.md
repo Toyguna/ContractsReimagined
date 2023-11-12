@@ -10,7 +10,7 @@ Check the branch 'DEV' for patch notes and planned features.
 1. Download Contracts: Reimagined
 2. Drop ``addons`` folder into your server's ``addons`` folder.
 3. Configure a MySQL database for your server.
-4. 3. Download the corresponding game plugin to your server.
+4. Download the corresponding game plugin to your server.
 
 ## Setting up a MySQL database
  WIP
