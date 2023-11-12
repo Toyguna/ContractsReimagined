@@ -1,6 +1,6 @@
-# ContractsReimagined
+# Contracts: Reimagined
 
-ContractsReimagined is a SourceMod plugin for in-game contracts. The plugin itself is the core of the contracts ecosystem. Rewards and similiar stuff are done via extention plugins using the ContractsReimagined API, to combat hardcoding, unnecessary and better sustainability. For instance, this way writing code for credit rewards for each shop plugin is not required!
+Contracts: Reimagined is a SourceMod plugin for in-game contracts. The plugin itself is the core of the contracts ecosystem. Rewards and game supports are done via extention plugins using the Contracts: Reimagined API, to combat hardcoding, unnecessary and better sustainability. For instance, this way writing code for credit rewards for each shop plugin is not required!
 
 Barebones README to create an idea for now.
 
