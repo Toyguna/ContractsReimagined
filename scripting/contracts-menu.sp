@@ -58,13 +58,14 @@ public int MenuCallback_Contract(Menu menu, MenuAction action, int param1, int p
         case MenuAction_Select:
         {
             Contracts_Contract contract;
-            Contracts_GetClientContract(param1, contract, sizeof(contract));
+            if (Contracts_GetClientContract(param1, contract, sizeof(contract)))
+            {
+                Contracts_Task task;
+                contract.tasks.GetArray(param2, task, sizeof(task));
 
-            Contracts_Task task;
-            contract.tasks.GetArray(param2, task, sizeof(task));
-
-            Menu detail = MenuConstructor_Task(task.name, task.goal, task.progress);
-            detail.Display(param1, 60);
+                Menu detail = MenuConstructor_Task(task.name, task.goal, task.progress);
+                detail.Display(param1, 60);
+            }
         }
 
         case MenuAction_End:

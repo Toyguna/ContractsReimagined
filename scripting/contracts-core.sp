@@ -44,6 +44,8 @@ GlobalForward gforward_TaskCompletion;
 
 public void OnPluginStart()
 {
+    RegPluginLibrary("ContractsReimagined");
+
     LoadTranslations("contractsreimagined.phrases");
 
     CreateConVars();

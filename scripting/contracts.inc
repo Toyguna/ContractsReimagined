@@ -12,8 +12,8 @@
 
 // ============== [ CONSTANTS ] ============== //
 
-#define PLUGIN_VERSION "b0.0.3"
-#define CHAT_PREFIX "\x06[Contracts]\x01"
+#define PLUGIN_VERSION "b0.4"
+#define CHAT_PREFIX "\x05[Contracts]\x01"
 #define CONSOLE_PREFIX "[Contracts]"
 
 #define MAX_TASK_ID 32

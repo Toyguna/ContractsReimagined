@@ -72,8 +72,8 @@ void ReadTaskKey(KeyValues kv, Contracts_Task task)
 
         if (StrEqual(section, "details"))
         {
-            kv.GetString("target", str_detail_as, sizeof(str_detail_as));
-            kv.GetString("as", str_detail_target, sizeof(str_detail_target));
+            kv.GetString("as", str_detail_as, sizeof(str_detail_as));
+            kv.GetString("target", str_detail_target, sizeof(str_detail_target));
 
             break;
         }
@@ -170,12 +170,20 @@ public void ProgressTask(int client, int amount, int task_index)
     Contracts_Task task;
     contract.tasks.GetArray(task_index, task, sizeof(task));
 
+    // check if already completed
+    if (task.IsCompleted()) return;
+    
     task.progress += amount;
-    if (task.IsCompleted()){ 
-        task.progress = task.goal;
-        TryCompleteClientContract(client);
-    }
+    if (task.progress > task.goal) task.progress = task.goal;
     contract.tasks.SetArray(task.index, task, sizeof(task));
+
+    if (task.IsCompleted())
+    {
+        CallForward_OnTaskCompletion(client, task.id, task.goal);
+    }
+    
+    // not sure if putting this here will result in worse performance at large scales?
+    TryCompleteClientContract(client);
 }
 
 public void CompleteClientContract(int client)
@@ -194,6 +202,8 @@ public void CompleteClientContract(int client)
     {
         PrintToChat(client, "%s %T", CHAT_PREFIX, "Contract_Completed", LANG_SERVER, contract.name);
     }
+
+    CallForward_OnContractCompletion(client, contract.id);
 
     Contracts_RemoveClientContract(client);
 }
@@ -218,7 +228,9 @@ public bool CheckContractCompletion(int client)
     {
         contract.tasks.GetArray(i, task, sizeof(task));
 
-        if (task.IsCompleted()) counter++;
+        if (task.IsCompleted()) {
+            counter++;
+        }
     }
 
     return counter >= contract.tasks.Length;
