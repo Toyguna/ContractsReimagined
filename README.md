@@ -13,7 +13,6 @@
 - Fixed a critical error while reading task cfgs. "as" and "target" parameters were mixed (Oops!)
 - Fixed forwards not being pushed. (I forgot to implement pushing; Oops!)
 - Also changed the prefix color to \x05 (idek the color)
-- Dev Note: The plugin is almost ready for launch, some more QoL and fully complete extentions, then voila!
 
 ### b0.3
 - Completed the database
