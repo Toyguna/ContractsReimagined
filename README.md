@@ -11,6 +11,9 @@ Check the branch 'DEV' for patch notes and planned features.
 2. Drop ``addons`` folder into your server's ``addons`` folder.
 3. Download the corresponding game plugin to your server.
 4. Configure a MySQL database for your server.
-   
+
+## Extentions
+- [TF2 Support](https://github.com/Toyguna/contracts-tf2)
+
 ## API Documentation
  WIKI HERE
