@@ -2,17 +2,17 @@
 
 ## - TO DO -
 - More API features (done for now)
-- CSGO support (UHHHHHHHHHHhh CS2??, postponed for now)
+- CSGO support (postponed for now)
 - TF2 Support (sorta done)
 - !! A CFG FILE!! and more ConVars for more customization like chat prefix, colors!
-- !! REWARDS, REWARDS AND REWARDS! Must create extentions rewards (credits, backpack items)
+- !! REWARDS! Must create extentions for rewards (credits, backpack items)
 
 ## - PATCH NOTES -
 
 ### b0.4
 - Fixed a critical error while reading task cfgs. "as" and "target" parameters were mixed (Oops!)
-- Fixed forwards not being pushed. (I forgot to implement pushing; Oops!)
-- Also changed the prefix color to \x05 (idek the color)
+- Fixed forwards not being pushed.
+- Also changed the prefix color.
 
 ### b0.3
 - Completed the database
