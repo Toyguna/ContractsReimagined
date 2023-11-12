@@ -18,5 +18,8 @@ Check the branch 'DEV' for patch notes and planned features.
 ## Extentions
 - [TF2 Support](https://github.com/Toyguna/contracts-tf2)
 
+## How to Use
+ tutorial here
+
 ## API Documentation
  WIKI HERE
