@@ -1,4 +1,4 @@
-# Contracts: Reimagined
+# [ANY] Contracts: Reimagined
 
 /!\ Contracts: Reimagined is still under development, however expect a release soon as the plugin is almost complete.
 
