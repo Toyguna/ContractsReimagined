@@ -1,20 +1,30 @@
 #include <sdkhooks>
 #include <sdktools>
-#include <sourcemod>
 
 #include <contracts>
 
+// ============== [ VARIABLES ] ============== //
+bool g_bTrackContract[MAXPLAYERS + 1] = { false, ... };
+bool g_bMenuOpen[MAXPLAYERS + 1] = { false, ... };
+
+// ============== [ FUNCTIONS ] ============== //
+public void SetPlayerTracking(int client, bool tracking)
+{
+    if (!IsClientValid(client)) return;
+    g_bTrackContract[client] = tracking;
+}
+
 // ============== [ MENUS ] ============== //
 
-public Menu MenuConstructor_Contract(int client)
+public void MenuConstructor_Contract(int client)
 {
     Menu menu = new Menu(MenuCallback_Contract);
     
     Contracts_Contract contract;
-
+    
     if (
         !Contracts_GetClientContract(client, contract, sizeof(contract))
-    ) return null;
+    ) return;
 
     menu.SetTitle("  ✎ Contract: %s  ", contract.name);
 
@@ -23,6 +33,21 @@ public Menu MenuConstructor_Contract(int client)
 
     char str_index[3];
     char item[256];
+    char contract_progress[100];
+
+    menu.AddItem("track", " [  Track Contract  ] ");
+    if (contract.IsCompleted())
+    {
+        menu.AddItem("complete", " [ ===== TURN-IN ===== ] ");
+    } else
+    {
+        ContractProgressBar(contract, contract_progress);
+        menu.AddItem("progress", contract_progress);
+    }
+
+    char clientstr[8];
+    IntToString(client, clientstr, sizeof(clientstr));
+    menu.AddItem("", clientstr, ITEMDRAW_SPACER);
 
     for (int i = 0; i < tasks.Length; i++)
     {
@@ -48,7 +73,8 @@ public Menu MenuConstructor_Contract(int client)
 
     }
 
-    return menu;
+    menu.Display(client, 60);
+    g_bMenuOpen[client] = true;
 }
 
 public int MenuCallback_Contract(Menu menu, MenuAction action, int param1, int param2)
@@ -57,11 +83,31 @@ public int MenuCallback_Contract(Menu menu, MenuAction action, int param1, int p
     {
         case MenuAction_Select:
         {
+            char id[128];
             Contracts_Contract contract;
             if (Contracts_GetClientContract(param1, contract, sizeof(contract)))
             {
+                GetMenuItem(menu, param2, id, sizeof(id));
+                
+                if (StrEqual(id, "complete"))
+                {
+                    CompleteClientContract(param1);
+                    return 0;
+                }
+                else if (StrEqual(id, "track"))
+                {
+                    return 0;
+                }
+                else if (StrEqual(id, "progress"))
+                {
+                    return 0;
+                }
+
+                int index = StringToInt(id);
+
+
                 Contracts_Task task;
-                contract.tasks.GetArray(param2, task, sizeof(task));
+                contract.tasks.GetArray(index, task, sizeof(task));
 
                 Menu detail = MenuConstructor_Task(task.name, task.goal, task.progress);
                 detail.Display(param1, 60);
@@ -70,6 +116,13 @@ public int MenuCallback_Contract(Menu menu, MenuAction action, int param1, int p
 
         case MenuAction_End:
         {
+            char clientstr[8];
+            char temp[1];
+            GetMenuItem(menu, 2, temp, 1, _, clientstr, sizeof(clientstr));
+            int client = StringToInt(clientstr);
+
+            g_bMenuOpen[client] = false;
+
             delete menu;
         }
     }
@@ -84,7 +137,7 @@ public Menu MenuConstructor_Task(const char[] name, int goal, int progress)
 
     menu.SetTitle("  ✎ Task: %s", name);
 
-    char progress_bar[64] = "[ ";
+    char progress_bar[64] = " [ ";
 
     int amount = 10 * progress / goal;
 
@@ -107,7 +160,7 @@ public Menu MenuConstructor_Task(const char[] name, int goal, int progress)
 
     char progress_str[128];
     
-    Format(progress_str, sizeof(progress_str), "Progress: %d / %d", progress, goal);
+    Format(progress_str, sizeof(progress_str), " Progress: %d / %d", progress, goal);
 
     menu.AddItem("3", "", ITEMDRAW_SPACER);
     menu.AddItem("4", progress_str)
@@ -124,8 +177,7 @@ public int MenuCallback_Task(Menu menu, MenuAction action, int param1, int param
         {
             if (param2 == MenuCancel_ExitBack)
             {
-                Menu main = MenuConstructor_Contract(param1);
-                main.Display(param1, 60);
+                MenuConstructor_Contract(param1);
             }
         }
 
@@ -136,4 +188,42 @@ public int MenuCallback_Task(Menu menu, MenuAction action, int param1, int param
     }
 
     return 0;
+}
+
+public void ContractProgressBar(Contracts_Contract contract, const char buffer[100])
+{
+    char progress_bar[100] = " [ ";
+
+    int progress = contract.GetCompletion();
+
+    int amount = 12 * progress / 100;
+
+    for (int i = 0; i < 12; i++)
+    {
+        if (i < amount)
+        {
+            StrCat(progress_bar, sizeof(progress_bar), "⬛ ");
+        }
+        else
+        {
+            StrCat(progress_bar, sizeof(progress_bar), "=");
+        }
+    }
+
+    StrCat(progress_bar, sizeof(progress_bar), " ] ");
+
+    buffer = progress_bar;
+}
+
+public void HudText_Contract(int client)
+{
+    Contracts_Contract contract;
+    Contracts_GetClientContract(client, contract, sizeof(contract))
+}
+
+public bool Menu_GetClientOpen(int client)
+{
+    if (!IsClientValid(client)) return false;
+
+    return g_bMenuOpen[client];
 }

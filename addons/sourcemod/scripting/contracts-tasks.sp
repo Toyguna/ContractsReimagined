@@ -181,12 +181,17 @@ public void ProgressTask(int client, int amount, int task_index)
     {
         CallForward_OnTaskCompletion(client, task.id, task.goal);
     }
+
+    if (Menu_GetClientOpen(client))
+    {
+        MenuConstructor_Contract(client);
+    }
     
     // not sure if putting this here will result in worse performance at large scales?
-    TryCompleteClientContract(client);
+    if (contract.IsCompleted()) AnnounceCompletion(client);
 }
 
-public void CompleteClientContract(int client)
+void AnnounceCompletion(int client)
 {
     Contracts_Contract contract;
     Contracts_GetClientContract(client, contract, sizeof(contract));
@@ -204,38 +209,17 @@ public void CompleteClientContract(int client)
     }
 
     CallForward_OnContractCompletion(client, contract.id);
-
-    Contracts_RemoveClientContract(client);
 }
 
-public void TryCompleteClientContract(int client)
-{
-    if (!CheckContractCompletion(client)) return;
-
-    CompleteClientContract(client);
-}
-
-public bool CheckContractCompletion(int client)
+public void CompleteClientContract(int client)
 {
     Contracts_Contract contract;
     Contracts_GetClientContract(client, contract, sizeof(contract));
-    
-    Contracts_Task task;
 
-    int counter = 0;
+    CallForward_OnContractTurnIn(client, contract.id);
 
-    for (int i = 0; i < contract.tasks.Length; i++)
-    {
-        contract.tasks.GetArray(i, task, sizeof(task));
-
-        if (task.IsCompleted()) {
-            counter++;
-        }
-    }
-
-    return counter >= contract.tasks.Length;
+    Contracts_RemoveClientContract(client);
 }
-
 
 // ============== [ UTILITY ] ============== //
 

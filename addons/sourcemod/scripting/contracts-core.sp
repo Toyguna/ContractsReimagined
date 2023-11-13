@@ -39,6 +39,7 @@ bool ga_bPlayerHasContract[MAXPLAYERS + 1] = { false, ... };
 //   - Global Forwards
 GlobalForward gforward_ContractCompletion;
 GlobalForward gforward_TaskCompletion;
+GlobalForward gforward_ContractTurnIn;
 
 // ============== [ FORWARDS ] ============== //
 
@@ -118,6 +119,7 @@ void Register_GlobalForwards()
 {
     gforward_TaskCompletion = new GlobalForward("Contracts_OnTaskCompletion", ET_Ignore, Param_Cell, Param_String, Param_Cell);
     gforward_ContractCompletion = new GlobalForward("Contracts_OnContractCompletion", ET_Ignore, Param_Cell, Param_String);
+    gforward_ContractTurnIn = new GlobalForward("Contracts_OnContractTurnIn", ET_Ignore, Param_Cell, Param_String);
 }
 
 void Register_Natives()
@@ -144,14 +146,16 @@ void Register_Natives()
 void LoadPlayer(int client)
 {
     ga_bPlayerHasContract[client] = false;
+    SetPlayerTracking(client, false);
 
     DB_LoadClient(client);
     DB_CreateClientEntry(client);
 }
 
 void UnloadPlayer(int client)
-{
+{    
     DB_SaveClient(client);
+    SetPlayerTracking(client, false);
 
     if (ClientHasContract(client))
     {
@@ -251,6 +255,16 @@ public void CallForward_OnTaskCompletion(int client, const char[] task_id, int g
     Call_PushCell(client);
     Call_PushString(task_id);
     Call_PushCell(goal);
+
+    Call_Finish();
+}
+
+public void CallForward_OnContractTurnIn(int client, const char[] contract_id)
+{
+    Call_StartForward(gforward_ContractTurnIn);
+
+    Call_PushCell(client);
+    Call_PushString(contract_id);
 
     Call_Finish();
 }
