@@ -6,7 +6,7 @@ Contracts: Reimagined is a SourceMod plugin for in-game contracts. The plugin it
 
 The plugin is open for feedback and suggestions, feel free to express your thoughts!
 
-Check the branch 'DEV' for patch notes and planned features.
+Check the branch 'DEV' for the source code, patch notes and planned features.
 
 ## Installation
 1. Download Contracts: Reimagined
@@ -18,6 +18,6 @@ Check the branch 'DEV' for patch notes and planned features.
  WIP
 
 ## Wiki
-Check the Wiki out for API Documentation, User Manual, List of Extentions and more detail info.
+Check the Wiki out for API Documentation, User Manual, List of Extentions and more detailed info.
 
 [Contracts: Reimagined Wiki](https://github.com/Toyguna/ContractsReimagined/wiki)
