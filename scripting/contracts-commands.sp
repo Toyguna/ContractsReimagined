@@ -123,9 +123,7 @@ public Action Command_ShowContract(int client, int args)
         return Plugin_Handled;
     }
 
-    Menu menu = MenuConstructor_Contract(client);
-
-    menu.Display(client, 60);
+    MenuConstructor_Contract(client);
 
     return Plugin_Handled;
 }

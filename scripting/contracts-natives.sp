@@ -174,13 +174,13 @@ any Native_TaskTypeFromString(Handle plugin, int numParams)
     {
         type = Type_CSGrenadeKill;
     }
-    else if (StrEqual(string, "CSBombKill"))
-    {
-        type = Type_CSBombKill;
-    }
     else if (StrEqual(string, "CSFireKill"))
     {
         type = Type_CSFireKill;
+    }
+    else if (StrEqual(string, "CSBombKill"))
+    {
+        type = Type_CSBombKill;
     }
 
     return type;
@@ -263,13 +263,13 @@ any Native_StringFromTaskType(Handle plugin, int numParams)
         {
             buffer = "CSGrenadeKill";
         }
-        case Type_CSBombKill:
-        {
-            buffer = "CSBombKill";
-        }
         case Type_CSFireKill:
         {
             buffer = "CSFireKill";
+        }
+        case Type_CSBombKill:
+        {
+            buffer = "CSBombKill";
         }
         default:
         {
