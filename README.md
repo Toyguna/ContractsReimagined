@@ -6,6 +6,7 @@
 - TF2 Support (sorta done)
 - !! A CFG FILE!! and more ConVars for more customization like chat prefix, colors!
 - !! REWARDS! Must create extentions for rewards (credits, backpack items)
+- !! SFX
 
 ## - PATCH NOTES -
 
