@@ -15,8 +15,8 @@ Check the branch 'DEV' for patch notes and planned features.
 ## Setting up a MySQL database
  WIP
 
-## Extentions
-[List of Extentions from Wiki](https://github.com/Toyguna/ContractsReimagined/wiki/List-of-Extentions)
-
 ## Wiki
 [Contracts: Reimagined Wiki](https://github.com/Toyguna/ContractsReimagined/wiki)
+
+## Extentions
+[List of Extentions from Wiki](https://github.com/Toyguna/ContractsReimagined/wiki/List-of-Extentions)
