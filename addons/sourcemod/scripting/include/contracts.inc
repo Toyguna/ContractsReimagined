@@ -12,7 +12,7 @@
 
 // ============== [ CONSTANTS ] ============== //
 
-#define PLUGIN_VERSION "b0.4"
+#define PLUGIN_VERSION "b0.5"
 #define CHAT_PREFIX "\x05[Contracts]\x01"
 #define CONSOLE_PREFIX "[Contracts]"
 
@@ -50,8 +50,8 @@ enum Contracts_TaskType
     Type_CSWinRound,
     Type_CSWinMatch,
     Type_CSGrenadeKill,
-    Type_CSBombKill,
-    Type_CSFireKill
+    Type_CSFireKill,
+    Type_CSBombKill
 }
 
 enum Contracts_TaskDetail
@@ -79,27 +79,6 @@ enum Contracts_TaskDetail
 
 // ============== [ STURCTS ] ============== //
 
-enum struct Contracts_Contract
-{
-    char id[MAX_CONTRACT_ID];
-    char name[MAX_CONTRACT_NAME];
-
-    // ``owner = -1`` means that the struct is a blueprint
-    int owner;
-
-    ArrayList tasks;
-
-    void Init()
-    {
-        this.tasks = new ArrayList(sizeof(Contracts_Task));
-    }
-
-    void AddTask(Contracts_Task task)
-    {
-        this.tasks.PushArray(task, sizeof(task));
-    }
-}   
-
 enum struct Contracts_Task 
 {
     char id[MAX_TASK_ID];
@@ -125,6 +104,60 @@ enum struct Contracts_Task
     }
 }
 
+enum struct Contracts_Contract
+{
+    char id[MAX_CONTRACT_ID];
+    char name[MAX_CONTRACT_NAME];
+
+    // ``owner = -1`` means that the struct is a blueprint
+    int owner;
+
+    ArrayList tasks;
+
+    void Init()
+    {
+        this.tasks = new ArrayList(sizeof(Contracts_Task));
+    }
+
+    void AddTask(Contracts_Task task)
+    {
+        this.tasks.PushArray(task, sizeof(task));
+    }
+
+    int GetCompletion()
+    {
+        int goal;
+        int progress;
+
+        Contracts_Task task;
+
+        for (int i = 0; i < this.tasks.Length; i++)
+        {
+            this.tasks.GetArray(i, task, sizeof(task));
+            goal += task.goal;
+            progress += task.progress;
+        }
+
+        return 100 * progress / goal;
+    }
+
+    bool IsCompleted()
+    {
+        Contracts_Task task;
+
+        for (int i = 0; i < this.tasks.Length; i++)
+        {
+            this.tasks.GetArray(i, task, sizeof(task));
+            if (    !task.IsCompleted())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
 
 // ============== [ NATIVES ] ============== //
 
@@ -142,7 +175,7 @@ native bool Contracts_ClientHasContract(int client);
  * @param client Client index
  * @param buffer Buffer to store contract
  * @param size Size of buffer
- * @return true if success, false otherwise
+ * @return true on success, false otherwise
  */
 native bool Contracts_GetClientContract(int client, any[] buffer, int size);
 
@@ -152,7 +185,7 @@ native bool Contracts_GetClientContract(int client, any[] buffer, int size);
  * @param client Client index
  * @param contract Contract 
  * @param size Size of contract
- * @return true if success, false otherwise
+ * @return true on success, false otherwise
  */
 native bool Contracts_SetClientContract(int client, any[] contract, int size);
 
@@ -166,7 +199,7 @@ native bool Contracts_SetClientContract(int client, any[] contract, int size);
 native bool Contracts_RemoveClientContract(int client);
 
 /**
- * Progress a task by a specificed amount.
+ * Progress a task by a specified amount.
  * 
  * @param client        Client index
  * @param amount        Amount to progress
@@ -190,7 +223,7 @@ native Contracts_TaskType Contracts_TaskTypeFromString(const char[] string, int 
  * @param type TaskType to convert
  * @param buffer Buffer to store string
  * @param size Size of buffer
- * @return true if success, false otherwise
+ * @return true on success, false otherwise
  */
 native bool Contracts_StringFromTaskType(Contracts_TaskType type, const char[] buffer, int size);
 
@@ -206,12 +239,12 @@ native Contracts_TaskDetail Contracts_TaskDetailFromString(const char[] string, 
 /*
  * Converts ``Contracts_TaskDetail`` value to string
  *
- * @param type TaskDetail to convert
+ * @param detail TaskDetail to convert
  * @param buffer Buffer to store string
  * @param size Size of buffer
- * @return true if success, false otherwise
+ * @return true on success, false otherwise
  */
-native bool Contracts_StringFromTaskDetail(Contracts_TaskDetail type, const char[] buffer, int size);
+native bool Contracts_StringFromTaskDetail(Contracts_TaskDetail detail, const char[] buffer, int size);
 
 /*
  * Creates a task from given id.
@@ -219,7 +252,7 @@ native bool Contracts_StringFromTaskDetail(Contracts_TaskDetail type, const char
  * @param id Id of task to create
  * @param buffer Buffer to store task
  * @param size Size of buffer
- * @return true if success, false otherwise
+ * @return true on success, false otherwise
  */
 native bool Contracts_CreateTaskFromId(const char[] id, any[] buffer, int size);
 
@@ -229,7 +262,7 @@ native bool Contracts_CreateTaskFromId(const char[] id, any[] buffer, int size);
  * @param id Id of contract to create
  * @param buffer Buffer to store contract
  * @param size Size of buffer
- * @return true if success, false otherwise
+ * @return true on success, false otherwise
  */
 native bool Contracts_CreateContractFromId(const char[] id, any[] buffer, int size);
 
@@ -242,7 +275,7 @@ native bool Contracts_CreateContractFromId(const char[] id, any[] buffer, int si
  * @param client Client Index
  * @param contract_id Contract Id
  */
-forward void Contracts_OnContractCompletion(int client, const char[] contract_id);
+forward Contracts_OnContractCompletion(int client, const char[] contract_id);
 
 /*
  * Called when a client completes a task.
@@ -251,4 +284,13 @@ forward void Contracts_OnContractCompletion(int client, const char[] contract_id
  * @param task_id Task Id
  * @param goal Task Goal
  */
-forward void Contracts_OnTaskCompletion(int client, const char[] task_id, int goal)
+forward Contracts_OnTaskCompletion(int client, const char[] task_id, int goal);
+
+
+/*
+ * Called when a client turns in their contract
+ *
+ * @param client Client Index
+ * @param contract_id Contract Id
+ */
+forward Contracts_OnContractTurnIn(int client, const char[] contract_id);
