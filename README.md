@@ -2,7 +2,9 @@
 
 /!\ Contracts: Reimagined is still under development, however expect a release soon as the plugin is almost complete.
 
-Contracts: Reimagined is a SourceMod plugin for in-game contracts. The plugin itself is the core of the contracts ecosystem. Rewards and supports for games are done via extention plugins using the Contracts: Reimagined API to combat hardcoding, unnecessary code and better sustainability. For instance, this way writing code for credit rewards for each shop plugin is not required! Also, creating extentions are not just for game supports or store rewards; as an example, you can create an extention that spawns fireworks and balloons as celebrations for people that complete their contracts!
+Contracts: Reimagined is a SourceMod plugin for in-game contracts. The plugin itself is the core of the contracts ecosystem. Rewards and supports for games are done via extention plugins using the Contracts: Reimagined API to combat hardcoding, unnecessary code and better sustainability. For instance, this way writing code for credit rewards for each shop plugin is not required! Also, creating extentions are not just for game supports or store rewards; as an example, you can create an extention that spawns fireworks and balloons as celebrations for people that complete their contracts.
+
+The plugin is open for feedback and suggestions, feel free to express your thoughts!
 
 Check the branch 'DEV' for patch notes and planned features.
 
