@@ -18,7 +18,6 @@ Check the branch 'DEV' for patch notes and planned features.
  WIP
 
 ## Wiki
-[Contracts: Reimagined Wiki](https://github.com/Toyguna/ContractsReimagined/wiki)
+Check the Wiki out for API Documentation, User Manual and a List of Extentions
 
-## Extentions
-[List of Extentions from Wiki](https://github.com/Toyguna/ContractsReimagined/wiki/List-of-Extentions)
+[Contracts: Reimagined Wiki](https://github.com/Toyguna/ContractsReimagined/wiki)
