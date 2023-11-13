@@ -10,6 +10,15 @@
 
 ## - PATCH NOTES -
 
+### b0.5
+- Added real-time contract menu updating.
+- Added contract turning in.
+    - Contracts now have to be turned in to be completed.
+- Revamped contract menu.
+    - Added a progress bar (also a turn-in button)
+    - Tracking button (WIP)
+- Added a new forward ``#Contracts_OnContractTurnIn``
+
 ### b0.4
 - Fixed a critical error while reading task cfgs. "as" and "target" parameters were mixed (Oops!)
 - Fixed forwards not being pushed.
