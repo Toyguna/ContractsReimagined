@@ -18,6 +18,6 @@ Check the branch 'DEV' for patch notes and planned features.
  WIP
 
 ## Wiki
-Check the Wiki out for API Documentation, User Manual and a List of Extentions
+Check the Wiki out for API Documentation, User Manual, List of Extentions and more detail info.
 
 [Contracts: Reimagined Wiki](https://github.com/Toyguna/ContractsReimagined/wiki)
