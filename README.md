@@ -16,10 +16,7 @@ Check the branch 'DEV' for patch notes and planned features.
  WIP
 
 ## Extentions
-- [TF2 Support](https://github.com/Toyguna/contracts-tf2)
+[List of Extentions from Wiki](https://github.com/Toyguna/ContractsReimagined/wiki/List-of-Extentions)
 
-## How to Use
- tutorial here
-
-## API Documentation
- WIKI HERE
+## Wiki
+[Contracts: Reimagined Wiki](https://github.com/Toyguna/ContractsReimagined/wiki)
